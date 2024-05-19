@@ -1,0 +1,14 @@
+{
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[html]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[gohtml]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"prettier.htmlWhitespaceSensitivity": "ignore",
+	"[go]": {
+		"editor.defaultFormatter": "golang.go"
+	}
+}
