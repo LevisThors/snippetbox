@@ -8,6 +8,7 @@ import (
 	"runtime/debug"
 
 	"github.com/go-playground/form"
+	"github.com/justinas/nosurf"
 )
 
 func (app *application) decodePostForm(r *http.Request, dst any) error {
@@ -61,4 +62,16 @@ func (app *application) render(w http.ResponseWriter, status int, page string, d
 
 	w.WriteHeader(status)
 	buf.WriteTo(w)
+}
+
+func (app *application) newTemplateData(r *http.Request) *templateData {
+	return &templateData{
+		Flash:           app.sessionManager.PopString(r.Context(), "flash"),
+		IsAuthenticated: app.isAuthenticated(r),
+		CSRFToken:       nosurf.Token(r),
+	}
+}
+
+func (app *application) isAuthenticated(r *http.Request) bool {
+	return app.sessionManager.Exists(r.Context(), "authenticatedUserID")
 }
