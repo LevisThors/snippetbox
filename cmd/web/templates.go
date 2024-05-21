@@ -1,10 +1,12 @@
 package main
 
 import (
+	"io/fs"
 	"path/filepath"
 	"text/template"
 
 	"github.com/levisthors/snippetbox/internal/models"
+	"github.com/levisthors/snippetbox/ui"
 )
 
 type templateData struct {
@@ -19,7 +21,7 @@ type templateData struct {
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./ui/html/pages/*.gohtml")
+	pages, err := fs.Glob(ui.Files, "html/pages/*.gohtml")
 	if err != nil {
 		return nil, err
 	}
@@ -27,17 +29,14 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		name := filepath.Base(page)
 
-		ts, err := template.ParseFiles("./ui/html/base.gohtml")
-		if err != nil {
-			return nil, err
+		patterns := []string{
+			"html/base.gohtml",
+			"html/partials/*.gohtml",
+			page,
 		}
 
-		ts, err = ts.ParseGlob("./ui/html/partials/*.gohtml")
-		if err != nil {
-			return nil, err
-		}
-
-		ts, err = ts.ParseFiles(page)
+		ts, err := template.New(name).ParseFS(ui.Files,
+			patterns...)
 		if err != nil {
 			return nil, err
 		}
