@@ -12,6 +12,7 @@ import (
 type templateData struct {
 	Snippet         *models.Snippet
 	Snippets        []*models.Snippet
+	User            *models.User
 	Form            any
 	Flash           string
 	IsAuthenticated bool

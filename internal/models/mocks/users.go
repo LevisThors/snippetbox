@@ -1,8 +1,19 @@
 package mocks
 
-import "github.com/levisthors/snippetbox/internal/models"
+import (
+	"time"
+
+	"github.com/levisthors/snippetbox/internal/models"
+)
 
 type UserModel struct{}
+
+var mockUser = &models.User{
+	ID:      1,
+	Name:    "Test",
+	Email:   "test@test.com",
+	Created: time.Now(),
+}
 
 func (m *UserModel) Insert(name, email, password string) error {
 	switch email {
@@ -25,4 +36,23 @@ func (m *UserModel) Exists(id int) (bool, error) {
 	default:
 		return false, nil
 	}
+}
+
+func (m *UserModel) Get(id int) (*models.User, error) {
+	switch id {
+	case 1:
+		return mockUser, nil
+	default:
+		return nil, nil
+	}
+}
+
+func (m *UserModel) PasswordUpdate(id int, currentPassword, newPassword string) error {
+	if id == 1 {
+		if currentPassword != "pa$$word" {
+			return models.ErrInvalidCredentials
+		}
+		return nil
+	}
+	return models.ErrNoRecord
 }
